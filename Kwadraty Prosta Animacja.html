@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<html lang="pl">
+	<head>
+		<meta charset="utf-8">
+		<title>DUŻO kwadratów</title>
+		<style>
+			body{
+				margin:0;
+				padding: 0;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+		<script src="js/rAF.js"></script>
+		<script>
+			var my_canvas = document.createElement('canvas');
+			//ustawiamy szerokość i wysokość canvas
+			my_canvas.width = window.innerWidth;
+			my_canvas.height = window.innerWidth;
+			// dodajemy canvas do elementu „body”
+			document.body.appendChild(my_canvas);
+			// Jeśli chcemy coś wyświetlić w elemencie canvas musimy skorzystać z obiektu „context 2D" (lub WebGL jeśli chcemy rysować elementy 3D)
+			var ctx = my_canvas.getContext('2d');
+			
+			var wszystkieKwadraty = [];
+
+			var widoczneKwadraty = [];
+
+			
+			//przypisanie prędkości klatek/s
+			var fps = 60;
+			var lastTime = 0;
+			animationLoop();
+			//rysowanie kwadratu i pierwsza funkcja
+			function animationLoop(time){
+				requestAnimationFrame( animationLoop );
+
+				
+
+			if(time-lastTime>=1000/fps){
+				lastTime = time;
+
+				ctx.fillStyle = 'rgba(255, 255, 255, 0.09)';
+				ctx.fillRect(0,0,my_canvas.width, my_canvas.height);
+					//dodajemy kwadrat
+				widoczneKwadraty.length = 0;
+
+				for (var i=0; i<15; i++) {
+					wszystkieKwadraty.push({
+					x:my_canvas.width/2,
+					y:my_canvas.height/4,
+					h:rand(5,10),
+					speedX:rand(-1000,1000)/100,
+					speedY:rand(-1000,1000)/100,
+					r:255,
+					g:rand(0,240),
+					b:rand(0,100)
+					
+				});
+
+				}
+				
+				//
+				
+
+				for (var i=0; i<wszystkieKwadraty.length; i++) {
+						var kwadrat = wszystkieKwadraty[i];
+
+						ctx.fillStyle = 'rgb('+kwadrat.r+','+kwadrat.g+','+kwadrat.b+',1)';
+
+						kwadrat.x += kwadrat.speedX;
+						kwadrat.y += kwadrat.speedY;
+
+
+						kwadrat.speedY = kwadrat.speedY+0.06;
+
+						kwadrat.r = Math.min(255, kwadrat.r+2);
+						kwadrat.g = Math.min(255, kwadrat.g+2);	
+						kwadrat.b = Math.min(255, kwadrat.b+2);
+
+						ctx.fillRect(kwadrat.x-kwadrat.h/2 ,kwadrat.y-kwadrat.h/2, kwadrat.h, kwadrat.h);
+
+
+						if((kwadrat.x+kwadrat.h/2>0 && kwadrat.x-kwadrat.h/2<my_canvas.width && kwadrat.y+kwadrat.h/2>0 && kwadrat.y-kwadrat.h/2<my_canvas.height) && (kwadrat.r!=255 || kwadrat.g!= 255 || kwadrat.b!=255)){
+
+							widoczneKwadraty.push(kwadrat)
+						}
+
+				}
+				
+				wszystkieKwadraty = widoczneKwadraty.concat()
+
+				
+				
+			  }
+			}
+
+			function rand(min,max){
+				return Math.floor(Math.random()*(max-min+1))+min;
+			}
+		</script>
+	</body>
+</html>
